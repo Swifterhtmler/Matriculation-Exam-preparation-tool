@@ -1,11 +1,26 @@
 import { app, BrowserWindow } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
+import fs from 'fs'
+import { OpenAI } from 'openai';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
+
+// ipcMain.handle('openai-chat', async (event, { messages }) => {
+//   try {
+//     const result = await api.chat.completions.create({
+//       model: 'google/gemma-3n-e4b-it',
+//       messages,
+//     });
+//     return result.choices[0].message.content;
+//   } catch (err) {
+//     console.error("OpenAI API error:", err);
+//     throw new Error(err.message || "Unknown error");
+//   }
+// });
 
 const createWindow = () => {
   // Create the browser window.
@@ -48,8 +63,6 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }

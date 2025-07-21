@@ -1,6 +1,6 @@
 <script lang="ts">
   import { cards, type AllCards, type Flashcard } from './stores'; // Ensure correct path to your stores.js
-  import Flashcards from './flashcards.svelte'; // Ensure correct path to your flashcards.svelte
+  import Flashcards from './flashcards.svelte'; 
 
   // State for managing the selected "folder" (flattened key)
   let selectedSubjectChapterKey: string | null = null; // E.g., "kemia__luku1"
@@ -184,7 +184,7 @@
 <style>
   .content-manager-container {
     width: 500px; /* Fixed width */
-    height: 780px; /* Fixed height */
+    height: 600px;
     margin: 20px auto; /* Center the component */
     background-color: #f0f8ff; /* Light blue background */
     border-radius: 10px;
@@ -193,6 +193,8 @@
     flex-direction: column;
     overflow: hidden; /* Hide any overflowing content */
   }
+
+
 
   .header-section {
     padding: 10px 15px;

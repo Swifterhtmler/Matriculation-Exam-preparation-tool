@@ -1,12 +1,6 @@
 <script>
   import { writable } from "svelte/store";
   import { todoItems } from './stores.js';
-
-
-
-
-
-
   // import { cards } from "./stores.js"; 
   // import { cards } from "./stores.js";
   import Flashcards from "./flashcards.svelte";
@@ -18,17 +12,12 @@
   import Arcchartto from "./arcchartto.svelte";
   import { motivationval } from "./stores.js";
 
-
-
   import Todo from "./todo.svelte";
 
-  import { onMount } from 'svelte';
-
-  import { editorDivStore } from './stores.js';
 
   import { Chart, Svg, Axis, Bars } from 'layerchart';
 
-  import { editorTextStore } from "./stores.js";
+
 
   import Artificialintelligence from "./artificialintelligence.svelte";
 
@@ -92,8 +81,6 @@
 <Artificialintelligence />
 
 </div>
-
-
 
 
 

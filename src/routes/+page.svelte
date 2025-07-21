@@ -105,9 +105,9 @@
 <select bind:value={ainevalinta}>
   <option value="Aloitussivu">Aloitussivu</option>
   <option value="Kemia">Kemia</option>
-  <option value="Matematiikka">Matematiikka</option>
+  <!-- <option value="Matematiikka">Matematiikka</option>
   <option value="Englanti">Englanti</option>
-  <option value="Äidinkieli">Äidinkieli</option>
+  <option value="Äidinkieli">Äidinkieli</option> -->
 </select>
 
 
@@ -119,14 +119,34 @@
    {#key ainevalinta}
   {#if ainevalinta === "Kemia"}
     <Kemia />
-  {:else if ainevalinta === "Matematiikka"}
+  <!-- {:else if ainevalinta === "Matematiikka"}
     <Matematiikka />
   {:else if ainevalinta === "Englanti"}
     <Englanti />
   {:else if ainevalinta === "Äidinkieli"}
-    <Aidinkieli /> 
+    <Aidinkieli />  -->
   {:else}
     <Aloitussivu />
   {/if}
   {/key}
 </main>
+
+
+<style>
+
+h1 {
+	font-size: 32px !important;
+	margin-left: 25px !important;
+	margin-top: 5px !important;
+}
+
+p {
+	margin-left: 25px !important;
+	margin-bottom: 6px !important;
+}
+
+select {
+	width: 130px !important;
+}
+
+</style>

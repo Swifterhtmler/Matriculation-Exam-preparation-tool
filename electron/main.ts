@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
+import { fileURLToPath } from 'url';
 import fs from 'fs'
 import { OpenAI } from 'openai';
 
@@ -8,6 +9,10 @@ import { OpenAI } from 'openai';
 if (started) {
   app.quit();
 }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dataPath = path.join(app.getPath('userData'), 'saved.json');
 
 // ipcMain.handle('openai-chat', async (event, { messages }) => {
 //   try {
@@ -47,6 +52,30 @@ const createWindow = () => {
     );
   }
 };
+
+
+ipcMain.handle('save-file', (event, data) => {
+  console.log('Saving to:', dataPath);
+  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+  return true;
+});
+
+ipcMain.handle('load-file', async () => {
+  console.log('Trying to load file:', dataPath);
+  if (fs.existsSync(dataPath)) {
+    const content = fs.readFileSync(dataPath, 'utf8');
+    return JSON.parse(content);
+  } else {
+    // Return the default structure your Svelte app expects
+    return {
+      todoItems: { Kemia: [], matematiikka: [] },
+      cards: {},
+      motivationval: [],
+      editorText: ''
+    };
+  }
+});
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

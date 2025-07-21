@@ -210,7 +210,7 @@ export const todoItems = writable({
 export const cards = writable({}); // Initialize as empty object, will be populated on load
 
 
-export const motivationval = writable([0, 0]);
+export const motivationval = writable([0,0]);
 
 // --- CHANGE 2: editorTextStore also uses flattened keys ---
 export const editorTextStore = writable({}); // Initialize as empty object, will be populated on load

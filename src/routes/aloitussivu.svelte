@@ -19,11 +19,10 @@
 
   import { onMount } from 'svelte';
 
-  import { editorDivStore } from './stores.js';
+
 
   import { Chart, Svg, Axis, Bars } from 'layerchart';
 
-  import { editorTextStore } from "./stores.js";
 
 
 

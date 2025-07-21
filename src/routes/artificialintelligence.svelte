@@ -107,7 +107,7 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
 
 <script lang="ts">
   import { get } from 'svelte/store';
-  import { cards, todoItems, editorTextStore } from './stores.js'; // Adjust path based on where you save this component
+  import { cards, todoItems } from './stores.js'; // Adjust path based on where you save this component
 
   let userMessage = "";
   let assistantReply = "";
@@ -136,7 +136,6 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
       const allData = {
         cards: get(cards),
         todoItems: get(todoItems),
-        editorText: get(editorTextStore),
       };
 
       const systemInstruction = `

@@ -1,44 +1,42 @@
 <script>
-
 import { todoItems } from './stores.js';
 
- export let subject = ""; 
-  $: subjectTodos = $todoItems[subject] ?? [];
+export let subject = "";
+let todoText = "";
 
-  let todoText = "";
+$: subjectTodos = $todoItems && $todoItems[subject] ? $todoItems[subject] : [];
 
-  function AddItem() {
-    if (todoText.trim() === "") return;
-    todoItems.update(all => {
-      const updated = { ...all };
-      updated[subject] = [...(updated[subject] ?? []), todoText];
-      return updated;
-    });
-    todoText = "";
+function AddItem() {
+  if (todoText.trim() === "") return;
+  todoItems.update(all => {
+    const updated = { ...all };
+    updated[subject] = [...(updated[subject] ?? []), todoText];
+    return updated;
+  });
+  todoText = "";
+}
+
+function removeItem() {
+  todoItems.update(all => {
+    const updated = { ...all };
+    updated[subject] = (updated[subject] ?? []).slice(0, -1);
+    return updated;
+  });
+}
+
+function markDoneTask(item) {
+  todoItems.update(all => {
+    const updated = { ...all };
+    updated[subject] = (updated[subject] ?? []).filter(i => i !== item);
+    return updated;
+  });
+}
+
+function handleKeyDownList(event) {
+  if (event.key === "Enter") {
+    AddItem();
   }
-
-  function removeItem() {
-    todoItems.update(all => {
-      const updated = { ...all };
-      updated[subject] = (updated[subject] ?? []).slice(0, -1);
-      return updated;
-    });
-  }
-
-  function markDoneTask(item) {
-    todoItems.update(all => {
-      const updated = { ...all };
-      updated[subject] = (updated[subject] ?? []).filter(i => i !== item);
-      return updated;
-    });
-  }
-
-  function handleKeyDownList(event) {
-    if (event.key === "Enter") {
-      AddItem();
-    }
-  }
-
+}
 </script>
 
 
@@ -243,12 +241,12 @@ import { todoItems } from './stores.js';
 
 .element {
 background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
 }
 
 </style>

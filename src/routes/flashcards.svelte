@@ -1,7 +1,7 @@
 <script lang="ts">
   import { cards } from "./stores.js"; // Re-introducing the store import
 
-  export let subject = ""; // Passed from parent, e.g., <Flashcards subject="kemia" />
+  export let subject = ""; 
 
   let showPopUp = false;
 
@@ -13,10 +13,6 @@
   function togglePopupCardFlip() {
     popupCardFlipped = !popupCardFlipped;
   }
-
-
-
-
 
     function removeCurrentCard() {
     if (subjectCards.length === 0) return; // No cards to remove

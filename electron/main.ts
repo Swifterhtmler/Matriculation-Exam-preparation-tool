@@ -4,11 +4,15 @@ import started from "electron-squirrel-startup";
 import { fileURLToPath } from 'url';
 import fs from 'fs'
 import { OpenAI } from 'openai';
+// import 'dotenv/config';
+
+import config from '../config.json' assert { type: "json" };
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +30,36 @@ const dataPath = path.join(app.getPath('userData'), 'saved.json');
 //     throw new Error(err.message || "Unknown error");
 //   }
 // });
+
+
+const api = new OpenAI({
+  baseURL: 'https://api.aimlapi.com/v1',
+  apiKey: config.OPENAI_API_KEY,
+});
+
+// Handle chat requests from renderer
+ipcMain.handle('openai-chat', async (event, { messages }) => {
+  try {
+    const result = await api.chat.completions.create({
+      model: 'google/gemma-3n-e4b-it',
+      messages,
+    });
+    return result.choices[0].message.content;
+  } catch (err: any) {
+    // console.error("OpenAI API error:", err);
+    // throw new Error(err.message || "Unknown error");
+     if (err.status === 429) {
+      console.error("OpenAI API rate limit exceeded (429)");
+      throw new Error("Rate limit exceeded. Please wait and try again later.");
+    }
+    console.error("OpenAI API error:", err);
+    throw new Error(err.message || "Unknown error");
+  }
+});
+
+
+
+
 
 const createWindow = () => {
   // Create the browser window.

@@ -12,6 +12,7 @@
   import Arcchartto from "./arcchartto.svelte";
   import { motivationval } from "./stores.js";
 
+
   import Todo from "./todo.svelte";
 
 
@@ -78,7 +79,13 @@
 
 <!-- <SvelteCalenderDisplay /> -->
 
+
+
+<!-- <div id="ai-container">
 <Artificialintelligence />
+</div> -->
+
+<Linechart />
 
 </div>
 
@@ -150,7 +157,9 @@
 
 <Todo subject="kemia" />
 
-
+<div id="ai-container">
+  <Artificialintelligence />
+</div>
 
 </div>
 </div>
@@ -202,5 +211,20 @@
     margin-left: 20px;
     margin-right: 20px;
   }
+
+  @media(min-width: 1700px) {
+  #ai-container {
+    margin-top: 20px;
+    width: 540px;
+    height: 600px;
+    margin-left: 30px;
+  }
+}
+
+
+
+
+
+
 
 </style>

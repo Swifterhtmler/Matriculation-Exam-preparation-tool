@@ -104,7 +104,7 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
   transform: scale(1.2);
 } 
 </style> -->
-
+<!-- 
 <script lang="ts">
   import { get } from 'svelte/store';
   import { cards, todoItems } from './stores.js'; // Adjust path based on where you save this component
@@ -162,7 +162,11 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
       }
 
     } catch (e) {
-      assistantReply = "Virhe: " + e.message;
+      if (e.message.includes("Rate limit exceeded")) {
+        assistantReply = "Olet käyttänyt tämän päiväisen ilmaisen viesti määräsi."
+      } else {
+        assistantReply = "Virhe: " + (e?.message ?? e);
+      }
       console.error("Error asking OpenAI:", e);
     } finally {
       loading = false;
@@ -206,45 +210,310 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
 
 <style>
  
+
  .chatbot-container {
-    width: 400px; /* Fixed width */
-    height: 300px; /* Fixed height */
+  width: 100%;
+  height: 100%;
+  min-width: 120px;   /* Optional: prevent too small */
+  min-height: 120px;
+  max-width: 100vw;   /* Prevent overflow */
+  max-height: 100vh;
+  background-color: rgb(240, 241, 240);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: sans-serif;
+  z-index: 998;
+  border: black 1px solid;
+}
+
+.chatbot-header {
+  background-color: #f0f0f0;
+  padding: 0.7em 1em;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  font-size: 1em;
+  flex-shrink: 0;
+}
+
+.chatbot-messages {
+  flex-grow: 1;
+  padding: 0.7em 1em;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #fdfdfd;
+  min-height: 0; /* For flexbox scrolling */
+}
+
+.assistant-message {
+  background-color: #e6e6e6;
+  padding: 0.5em 0.9em;
+  border-radius: 12px;
+  align-self: flex-start;
+  max-width: 85%;
+  font-size: 0.97em;
+  word-break: break-word;
+}
+
+.loading-indicator {
+  font-style: italic;
+  color: #666;
+  align-self: center;
+  padding: 5px;
+}
+
+.chatbot-input-area {
+  display: flex;
+  padding: 0.7em 1em;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+  flex-shrink: 0;
+  gap: 0.5em;
+}
+
+.chatbot-input-area input {
+  flex-grow: 1;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 0.5em 1em;
+  outline: none;
+  font-size: 1em;
+  min-width: 0; /* For flexbox shrinking */
+}
+
+.chatbot-input-area input:focus {
+  border-color: #a47cf3;
+}
+
+.send-btn {
+  background: linear-gradient(0deg, #A47CF3, #683FEA);
+  border: none;
+  border-radius: 50%;
+  width: 2.3em;
+  height: 2.3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.send-btn:hover {
+  box-shadow: 0px 0px 8px 2px rgba(153, 23, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.send-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.send-icon {
+  color: white;
+}
+
+.spinner {
+  animation: rotate 1s linear infinite;
+  width: 1.2em;
+  height: 1.2em;
+}
+.spinner .path {
+  stroke: white;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+</style> -->
+
+
+<script lang="ts">
+  import { get } from 'svelte/store';
+  import { cards, todoItems } from './stores.js';
+
+  let userMessage = "";
+  let loading = false;
+
+  // Message history: each message has a role and content
+  type Message = { role: "user" | "assistant", content: string };
+  let messages: Message[] = [];
+
+  async function askOpenAI() {
+    if (!userMessage.trim() || loading) {
+      return;
+    }
+
+    loading = true;
+
+    // Add the user's message to the history
+    messages = [...messages, { role: "user", content: userMessage }];
+
+    try {
+      const allData = {
+        cards: get(cards),
+        todoItems: get(todoItems),
+      };
+
+      const systemInstruction = `
+        You are an assistant that helps with study planning.
+        Always use the provided user data to answer questions if it is relevant.
+        If the answer cannot be found in the data, use your own knowledge to help the user, but do not mention that the data was missing or unavailable.
+        You can use the user data to make quizzes and other challenges.
+        You are a supportive study partner.
+        Answer in Finnish, or in the language the user uses in their question. Do not suggest quizzes or other activities user does not ask just answer the question.
+      `.trim();
+
+      const combinedMessage = `${systemInstruction}\n\nHere is my app data: ${JSON.stringify(allData)}\n\nUser question: ${userMessage}`;
+
+      if (typeof window !== 'undefined' && window.openaiAPI) {
+        const reply = await window.openaiAPI.chat([
+          { role: "user", content: combinedMessage }
+        ]);
+        messages = [...messages, { role: "assistant", content: reply }];
+      } else {
+        const errorMsg = "Virhe: OpenAI API ei ole käytettävissä. (Tarkista Electron preload.js)";
+        messages = [...messages, { role: "assistant", content: errorMsg }];
+        console.error("window.openaiAPI is not defined. Are you running in Electron and is preload.js configured?");
+      }
+    } catch (e) {
+      let errorMsg = "";
+      if (e?.message?.includes("Rate limit exceeded")) {
+        errorMsg = "Olet käyttänyt tämän päiväisen ilmaisen viesti määräsi.";
+      } else {
+        errorMsg = "Virhe: " + (e?.message ?? e?.toString?.() ?? String(e));
+      }
+      messages = [...messages, { role: "assistant", content: errorMsg }];
+      console.error("Error asking OpenAI:", e);
+    } finally {
+      loading = false;
+      userMessage = "";
+    }
+  }
+</script>
+
+<div class="chatbot-container">
+  <div class="chatbot-header">Tekoälyavustaja</div>
+  <div class="chatbot-messages">
+    {#each messages as msg (msg)}
+      <div
+        class="{msg.role === 'assistant' ? 'assistant-message' : 'user-message'}"
+        style="white-space: pre-wrap;"
+      >
+        {msg.content}
+      </div>
+    {/each}
+    {#if loading}
+      <div class="loading-indicator">Vastaus tulossa...</div>
+    {/if}
+  </div>
+  <div class="chatbot-input-area">
+    <input
+      type="text"
+      bind:value={userMessage}
+      placeholder="Kysy jotain... (muista että keskustelusi eivät tallennu)"
+      on:keydown={(e) => e.key === 'Enter' && askOpenAI()}
+      disabled={loading}
+    />
+    <button class="send-btn" on:click={askOpenAI} disabled={loading || !userMessage.trim()}>
+      {#if loading}
+        <svg class="spinner" viewBox="0 0 50 50">
+          <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+        </svg>
+      {:else}
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="send-icon">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      {/if}
+    </button>
+  </div>
+</div>
+
+<style>
+  .chatbot-container {
+    width: 100%;
+    height: 100%;
+    min-width: 120px;
+    min-height: 120px;
+    max-width: 100vw;
+    max-height: 100vh;
     background-color: rgb(240, 241, 240);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    font-family: sans-serif; /* A neutral font */
-    /* REMOVE position: fixed, left, transform, margin-top here */
-    z-index: 998; /* Still good to keep this if it overlays other things */
-   border: black 1px solid;
-}
+    font-family: sans-serif;
+    z-index: 998;
+    border: black 1px solid;
+  }
 
   .chatbot-header {
     background-color: #f0f0f0;
-    padding: 10px;
+    padding: 0.7em 1em;
     font-weight: bold;
     border-bottom: 1px solid #eee;
     text-align: center;
+    font-size: 1em;
+    flex-shrink: 0;
   }
 
   .chatbot-messages {
-    flex-grow: 1; /* Takes up available space */
-    padding: 10px;
-    overflow-y: auto; /* Scroll for messages */
+    flex-grow: 1;
+    padding: 0.7em 1em;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 8px;
     background-color: #fdfdfd;
+    min-height: 0;
   }
 
   .assistant-message {
-    background-color: #e6e6e6; /* Light grey bubble */
-    padding: 8px 12px;
+    background-color: #e6e6e6;
+    padding: 0.5em 0.9em;
     border-radius: 12px;
-    align-self: flex-start; /* Aligns to left for assistant */
-    max-width: 85%; /* Don't stretch full width */
+    align-self: flex-start;
+    max-width: 85%;
+    font-size: 0.97em;
+    word-break: break-word;
+  }
+
+  .user-message {
+    background-color: #a47cf3;
+    color: white;
+    padding: 0.5em 0.9em;
+    border-radius: 12px;
+    align-self: flex-end;
+    max-width: 85%;
+    font-size: 0.97em;
+    word-break: break-word;
   }
 
   .loading-indicator {
@@ -256,42 +525,44 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
 
   .chatbot-input-area {
     display: flex;
-    padding: 10px;
+    padding: 0.7em 1em;
     border-top: 1px solid #eee;
     background-color: #fff;
+    flex-shrink: 0;
+    gap: 0.5em;
   }
 
   .chatbot-input-area input {
     flex-grow: 1;
     border: 1px solid #ddd;
     border-radius: 20px;
-    padding: 8px 15px;
+    padding: 0.5em 1em;
     outline: none;
-    font-size: 0.9em;
+    font-size: 1em;
+    min-width: 0;
   }
 
   .chatbot-input-area input:focus {
-    border-color: #a47cf3; /* Highlight on focus */
+    border-color: #a47cf3;
   }
 
   .send-btn {
-    background: linear-gradient(0deg, #A47CF3, #683FEA); /* Your button gradient */
+    background: linear-gradient(0deg, #A47CF3, #683FEA);
     border: none;
-    border-radius: 50%; /* Make it round */
-    width: 38px; /* Smaller size */
-    height: 38px; /* Smaller size */
+    border-radius: 50%;
+    width: 2.3em;
+    height: 2.3em;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 10px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    flex-shrink: 0; /* Prevent shrinking */
-    padding: 0; /* Remove default padding */
+    flex-shrink: 0;
+    padding: 0;
   }
 
   .send-btn:hover {
-    box-shadow: 0px 0px 8px 2px rgba(153, 23, 255, 0.4); /* Subtle hover glow */
+    box-shadow: 0px 0px 8px 2px rgba(153, 23, 255, 0.4);
     transform: translateY(-1px);
   }
 
@@ -301,14 +572,13 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
   }
 
   .send-icon {
-    color: white; /* Icon color */
+    color: white;
   }
 
-  /* Spinner for loading state */
   .spinner {
     animation: rotate 1s linear infinite;
-    width: 20px;
-    height: 20px;
+    width: 1.2em;
+    height: 1.2em;
   }
   .spinner .path {
     stroke: white;

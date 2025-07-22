@@ -1,35 +1,34 @@
 <script lang="ts">
   import { cards, type AllCards, type Flashcard } from './stores'; // Ensure correct path to your stores.js
-  import Flashcards from './flashcards.svelte'; 
+  import Flashcards from './flashcards.svelte';
 
   // State for managing the selected "folder" (flattened key)
-  let selectedSubjectChapterKey: string | null = null; // E.g., "kemia__luku1"
+  let selectedSubjectChapterKey: string | null = $state(null); // E.g., "kemia__luku1"
 
   // --- NEW: State for filtering by main subject tag ---
-  let selectedSubjectTag: string | null = null; // e.g., 'kemia', 'matematiikka', or null for 'all'
+  let selectedSubjectTag: string | null = $state(null); // e.g., 'kemia', 'matematiikka', or null for 'all'
 
   // Input for creating new flattened keys (e.g., "Kemia Luku 1", "Matematiikka Kpl 3")
-  let newFolderName = "";
+  let newFolderName = $state("");
 
   // Reactive variables to derive all existing flattened keys for display
   // We'll map them back to human-readable names and include their main subject tag
-  $: allFolderItems = Object.keys($cards)
+  let allFolderItems = $derived(Object.keys($cards)
     .map(key => {
       const parts = key.split('__');
       const subjectTag = parts[0];
       const chapterSlug = parts.slice(1).join('_'); // e.g., 'luku1' or 'default'
-
       let chapterDisplayName = chapterSlug.replace(/_/g, ' ');
+
       // Special handling for 'default' chapter
       if (chapterSlug === 'default') {
         chapterDisplayName = 'Yleistä'; // Or 'Pääkansio', 'Perusteet', etc.
       } else {
-         // Capitalize first letter of chapter display name (only if not 'default')
-         chapterDisplayName = chapterDisplayName.charAt(0).toUpperCase() + chapterDisplayName.slice(1);
+        // Capitalize first letter of chapter display name (only if not 'default')
+        chapterDisplayName = chapterDisplayName.charAt(0).toUpperCase() + chapterDisplayName.slice(1);
       }
 
       const subjectDisplayName = subjectTag.charAt(0).toUpperCase() + subjectTag.slice(1).replace(/_/g, ' ');
-
       const fullDisplayName = chapterSlug === 'default'
         ? subjectDisplayName // If default chapter, just show subject name
         : `${subjectDisplayName}: ${chapterDisplayName}`; // Otherwise, show Subject: Chapter
@@ -41,17 +40,15 @@
         displayName: fullDisplayName // Kemia: Luku 1 or Kemia (for default)
       };
     })
-    .sort((a, b) => a.displayName.localeCompare(b.displayName)); // Sort alphabetically by display name
-
+    .sort((a, b) => a.displayName.localeCompare(b.displayName))); // Sort alphabetically by display name
 
   // --- NEW: Derive unique subject tags for the filter buttons ---
-  $: uniqueSubjectTags = Array.from(new Set(allFolderItems.map(item => item.subjectTag))).sort();
+  let uniqueSubjectTags = $derived(Array.from(new Set(allFolderItems.map(item => item.subjectTag))).sort());
 
   // --- NEW: Filtered list of folders based on selectedSubjectTag ---
-  $: filteredFolderItems = selectedSubjectTag
+  let filteredFolderItems = $derived(selectedSubjectTag
     ? allFolderItems.filter(item => item.subjectTag === selectedSubjectTag)
-    : allFolderItems;
-
+    : allFolderItems);
 
   // --- Functions to manage folders (flattened keys) ---
 
@@ -102,52 +99,46 @@
         delete newState[rawKey];
         return newState;
       });
+
       if (selectedSubjectChapterKey === rawKey) {
         selectedSubjectChapterKey = null; // Deselect if the current folder was deleted
       }
+
       // If the deleted folder's subject tag is no longer present, reset the filter
       if (!allFolderItems.some(item => item.subjectTag === selectedSubjectTag) && selectedSubjectTag !== null) {
-          selectedSubjectTag = null; // Reset filter if the only subject for filter is deleted
+        selectedSubjectTag = null; // Reset filter if the only subject for filter is deleted
       }
     }
   }
 
   // Helper to get the display name of the currently selected folder
-  $: currentSelectedDisplayName = allFolderItems.find(f => f.rawKey === selectedSubjectChapterKey)?.displayName || 'Valitse tai luo kansio';
-
+  let currentSelectedDisplayName = $derived(allFolderItems.find(f => f.rawKey === selectedSubjectChapterKey)?.displayName || 'Valitse tai luo kansio');
 </script>
 
 <div class="content-manager-container">
   {#if selectedSubjectChapterKey}
     <div class="header-section">
-        <button on:click={() => selectedSubjectChapterKey = null} class="back-to-selection">← Takaisin valikkoon</button>
-        <h2>{currentSelectedDisplayName}</h2>
+      <button onclick={() => selectedSubjectChapterKey = null} class="back-to-selection">← Takaisin valikkoon</button>
+      <h2>{currentSelectedDisplayName}</h2>
     </div>
-
     <Flashcards subject={selectedSubjectChapterKey} />
-
   {:else}
     <div class="selection-ui">
       <h1>Muistikorttien Hallinta</h1>
       <p class="description">Luo uusi kansio tai valitse olemassa oleva.</p>
-
       <hr>
-
       <section class="folder-management-section">
         <h3>Kansiot</h3>
-
         <div class="subject-tag-filters">
           <button
-            on:click={() => selectedSubjectTag = null}
-            class:active={selectedSubjectTag === null}
-          >
+            onclick={() => selectedSubjectTag = null}
+            class:active={selectedSubjectTag === null}>
             Kaikki
           </button>
           {#each uniqueSubjectTags as tag (tag)}
             <button
-              on:click={() => selectedSubjectTag = tag}
-              class:active={selectedSubjectTag === tag}
-            >
+              onclick={() => selectedSubjectTag = tag}
+              class:active={selectedSubjectTag === tag}>
               {tag.charAt(0).toUpperCase() + tag.slice(1).replace(/_/g, ' ')}
             </button>
           {/each}
@@ -155,10 +146,10 @@
         <div class="folder-list">
           {#each filteredFolderItems as folder (folder.rawKey)}
             <div class="folder-item">
-              <button on:click={() => selectFolder(folder.rawKey)}>
+              <button onclick={() => selectFolder(folder.rawKey)}>
                 {folder.displayName}
               </button>
-              <button on:click={() => deleteFolder(folder.rawKey, folder.displayName)} class="delete-button">X</button>
+              <button onclick={() => deleteFolder(folder.rawKey, folder.displayName)} class="delete-button">X</button>
             </div>
           {/each}
           {#if filteredFolderItems.length === 0}
@@ -170,9 +161,9 @@
             type="text"
             bind:value={newFolderName}
             placeholder="Uuden kansion nimi "
-            on:keydown={(e) => { if (e.key === 'Enter') createNewFolder(); }}
+            onkeydown={(e) => { if (e.key === 'Enter') createNewFolder(); }}
           />
-          <button on:click={createNewFolder} disabled={newFolderName.trim() === ""}>
+          <button onclick={createNewFolder} disabled={newFolderName.trim() === ""}>
             Luo Kansio
           </button>
         </div>
@@ -184,7 +175,7 @@
 <style>
   .content-manager-container {
     width: 500px; /* Fixed width */
-    height: 600px;
+    height: 740px;
     margin: 20px auto; /* Center the component */
     background-color: #f0f8ff; /* Light blue background */
     border-radius: 10px;
@@ -193,8 +184,6 @@
     flex-direction: column;
     overflow: hidden; /* Hide any overflowing content */
   }
-
-
 
   .header-section {
     padding: 10px 15px;
@@ -268,7 +257,7 @@
     gap: 8px;
     justify-content: center;
     margin-bottom: 1.5rem;
-    padding: 5px;
+    padding: 10px;
     background-color: #eaf6ff;
     border-radius: 8px;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
@@ -296,7 +285,6 @@
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
-
 
   .folder-list { /* Renamed from subject/chapter list */
     display: flex;
@@ -389,7 +377,7 @@
     width: 100%;
   }
 
-  /* Style for the Flashcards component when nested */
+  /* FIXED: Style for the Flashcards component when nested */
   .content-manager-container > :global(.container) {
     /* Target the container of Flashcards.svelte when it's a direct child */
     width: 100%;
@@ -398,7 +386,7 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Changed from 'center' to 'flex-start' */
     align-items: center;
   }
 </style>

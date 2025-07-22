@@ -138,7 +138,7 @@ function handleKeyDownList(event) {
     <br>
 
     <div class="rowButtons">
-      {#if subjectTodos.length >= 10 || todoText.length >= 40}
+      {#if subjectTodos.length >= 7 || todoText.length >= 40}
         <button class="taskButton" disabled on:click={AddItem}>Lyhennä tekstiä</button>
       {:else}
         <button class="taskButton" on:click={AddItem}>Lisää tehtävä</button>
@@ -163,6 +163,7 @@ function handleKeyDownList(event) {
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
+    margin-bottom: 20px;
   }
 
   h2 {
@@ -240,10 +241,13 @@ function handleKeyDownList(event) {
 }
 
 .element {
-background: none;
+background: rgb(234, 240, 240);
+ border-radius: 5px;
   color: inherit;
   border: none;
-  padding: 0;
+  padding: 3px;
+  padding-right: 10px;
+  padding-left: 10px;
   font: inherit;
   cursor: pointer;
   outline: inherit;

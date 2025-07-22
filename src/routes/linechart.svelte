@@ -76,10 +76,15 @@ function enforceMinMax(event) {
 <style>
   .data {
     width: 700px;
-    height: 320px;
+    height: 330px;
     background-color: #f3f4f5;
     padding: 10px;
     border-radius: 10px;
+  }
+
+  input {
+    width: 160px !important;
+    height: 28px !important;
   }
 
   .data :global(svg path),

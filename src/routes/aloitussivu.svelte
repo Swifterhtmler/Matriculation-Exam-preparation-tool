@@ -12,6 +12,9 @@
   import Arcchart from "./arcchart.svelte";
   import Arcchartto from "./arcchartto.svelte";
 
+  
+  import Artificialintelligence from "./artificialintelligence.svelte";
+
   import Todo from "./todo.svelte";
 
 
@@ -63,6 +66,9 @@
 
 
 
+<div id="ai-div">
+ <Artificialintelligence />
+</div>
 
 
 
@@ -115,6 +121,13 @@
     border-radius: 10px;
     margin-left: 20px;
     margin-right: 20px;
+  }
+
+  #ai-div {
+    margin-top: 20px;
+    width: 540px;
+    height: 600px;
+    margin-left: 30px;
   }
 
 </style>

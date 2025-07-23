@@ -222,6 +222,8 @@ let initialized = false;
 let isLoading = false;
 let isSaving = false;
 
+ export const quillEditorContent = writable("")
+
 // Initialize stores immediately when module loads
 if (typeof window !== "undefined" && window.electronAPI) {
   initializeStores();
@@ -255,6 +257,11 @@ async function initializeStores() {
       editorTextStore.set({}); // Ensure it's an empty object if no data
     }
 
+    if (data?.quillEditorContent) {
+      quillEditorContent.set(data.quillEditorContent)
+    } else {
+      quillEditorContent.set("") // Default empty string
+    }
 
     // Set up last values after initialization
     setTimeout(() => {
@@ -262,7 +269,7 @@ async function initializeStores() {
       lastCards = get(cards);
       lastMotivationval = get(motivationval);
       lastEditorText = get(editorTextStore); // lastEditorText now holds an object
-
+      lastQuillEditorContent = get(quillEditorContent) // NEW
       initialized = true;
       isLoading = false;
       console.log("Stores initialized successfully");
@@ -273,6 +280,7 @@ async function initializeStores() {
     // On error, ensure stores are in a predictable, empty state
     cards.set({});
     editorTextStore.set({});
+    quillEditorContent.set("") // NEW
     initialized = true;
     isLoading = false;
   }
@@ -291,6 +299,7 @@ function saveAll() {
     motivationval: get(motivationval),
     // --- CHANGE 6: editorTextStore is already in the correct flattened format ---
     editorText: get(editorTextStore),
+    quillEditorContent: get(quillEditorContent),
   };
 
   console.log("Saving payload:", payload);
@@ -367,3 +376,16 @@ editorTextStore.subscribe((value) => {
 
 // Export initialization function
 export { initializeStores };
+
+
+let lastQuillEditorContent = null // NEW
+
+// NEW: Quill Editor Content subscription
+quillEditorContent.subscribe((value) => {
+  if (initialized && !isLoading && !isSaving && value !== lastQuillEditorContent && value !== undefined) {
+    lastQuillEditorContent = value
+    console.log("Quill editor content changed, saving...", value?.substring(0, 50) + "...")
+    debouncedSave()
+  }
+})
+

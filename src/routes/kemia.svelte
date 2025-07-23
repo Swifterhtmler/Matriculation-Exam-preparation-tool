@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { writable } from "svelte/store";
   import { todoItems } from './stores.js';
   // import { cards } from "./stores.js"; 
@@ -11,9 +11,33 @@
   import Arcchart from "./arcchart.svelte";
   import Arcchartto from "./arcchartto.svelte";
   import { motivationval } from "./stores.js";
-
-
   import Todo from "./todo.svelte";
+
+
+ import QuillEditor from './QuillEditor.svelte';
+  
+  let editorContent = $state('<p>Hello World!</p><p>Some initial <strong>bold</strong> text</p><p><br /></p>');
+  let editorRef: any = $state();
+  
+  function handleTextChange(html: string) {
+    console.log('Content changed:', html);
+  }
+  
+  function getEditorContent() {
+    if (editorRef) {
+      console.log('HTML:', editorRef.getHTML());
+      console.log('Text:', editorRef.getText());
+    }
+  }
+  
+  function setNewContent() {
+    if (editorRef) {
+      editorRef.setHTML('<p>New content set programmatically!</p>');
+    }
+  }
+
+
+
 
 
   import { Chart, Svg, Axis, Bars } from 'layerchart';
@@ -27,6 +51,7 @@
 
 
  import { get } from "svelte/store";
+
 
 //  import { initializeStores } from './stores.js';
 
@@ -155,12 +180,22 @@
 </section>
 </div> -->
 
+<!--Added containers to make the speration easier-->
+<div class="outercontainer-container">
+<div id="todo-and-artificialintelligence-section-container">
 <Todo subject="kemia" />
 
+<!-- <div id="ai-container-and-editor-container-stack-div"> -->
 <div id="ai-container">
   <Artificialintelligence />
 </div>
+</div>
 
+<div id="editor-container">
+<QuillEditor />
+</div>
+</div>
+<!-- </div> -->
 </div>
 </div>
 
@@ -178,7 +213,7 @@
     padding: 1rem;
     min-height: 100vh;
     align-items: start;
-    margin-left: 50px;
+    margin-left: 0;
   }
 
   /* #to-do {
@@ -214,17 +249,36 @@
 
   @media(min-width: 1700px) {
   #ai-container {
-    margin-top: 20px;
     width: 540px;
     height: 600px;
+    margin-top: 20px;
     margin-left: 30px;
   }
 }
 
 
+#editor-container {
+  width: 940px;
+  height: 320px;
+}
 
+ /* #ai-container-and-editor-container-stack-div {
+  display: flex;
+  flex-direction: column;
+  margin-left: 30px;
+  margin-top: 20px;
+  gap: 10px;
+} */
 
+#todo-and-artificialintelligence-section-container {
+  display: flex;
+  flex-direction: row;
+}
 
-
+.outercontainer-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: -100px;
+}
 
 </style>

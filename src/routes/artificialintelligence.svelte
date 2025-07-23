@@ -431,12 +431,13 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
     {#if loading}
       <div class="loading-indicator">Vastaus tulossa...</div>
     {/if}
+    <p id="reminder">Keskustelusi eivät tallennu apin uudelleen käynnistyessä</p>
   </div>
   <div class="chatbot-input-area">
     <input
       type="text"
       bind:value={userMessage}
-      placeholder="Kysy jotain... (muista että keskustelusi eivät tallennu)"
+      placeholder="Kysy jotain..."
       on:keydown={(e) => e.key === 'Enter' && askOpenAI()}
       disabled={loading}
     />
@@ -472,6 +473,7 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
     font-family: sans-serif;
     z-index: 998;
     border: black 1px solid;
+
   }
 
   .chatbot-header {
@@ -493,6 +495,7 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
     gap: 8px;
     background-color: #fdfdfd;
     min-height: 0;
+    position: relative;
   }
 
   .assistant-message {
@@ -604,5 +607,14 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
       stroke-dasharray: 90, 150;
       stroke-dashoffset: -124;
     }
+  }
+
+  #reminder {
+    color: #667;
+    opacity: 0.6;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 93%;
   }
 </style>

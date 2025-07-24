@@ -116,7 +116,7 @@
 
 <style>
   .editor-wrapper {
-  width: 100%;
+    width: 100%;
     height: 100%;
     min-width: 120px;
     max-width: 100vw;

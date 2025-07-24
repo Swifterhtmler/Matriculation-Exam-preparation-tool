@@ -123,8 +123,9 @@
  
 <!-- <Flashcards  subject="Kemia"/> -->
 
+<!-- <div id="content-manager-container-section"> -->
 <ContentManager />
-
+<!-- </div> -->
 <!-- 
 
 <div id="to-do">
@@ -183,18 +184,23 @@
 <!--Added containers to make the speration easier-->
 <div class="outercontainer-container">
 <div id="todo-and-artificialintelligence-section-container">
-<Todo subject="kemia" />
 
+  <div id="todo-container-section">
+  <Todo subject="kemia" />
+  </div>
 <!-- <div id="ai-container-and-editor-container-stack-div"> -->
 <div id="ai-container">
   <Artificialintelligence />
 </div>
+
 </div>
 
 <div id="editor-container">
 <QuillEditor />
 </div>
+
 </div>
+
 <!-- </div> -->
 </div>
 </div>
@@ -205,15 +211,15 @@
 
   .container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+    grid-template-columns: 1fr 3fr;
     justify-content: center;
-    /* gap: 2rem; */
+        /* gap: 2rem; */
     max-width: 95%;
     margin: 0 auto;
     padding: 1rem;
     min-height: 100vh;
     align-items: start;
-    margin-left: 0;
+    margin-left: 40px;
   }
 
   /* #to-do {
@@ -239,6 +245,11 @@
     margin-right: 20px;
   }
 
+  #todo-container-section {
+    width: 50%;
+    height: 600px;
+  }
+
   .usecase-container {
     margin-top: 30px;
     background-color: #e5ecf0;
@@ -247,19 +258,19 @@
     margin-right: 20px;
   }
 
-  @media(min-width: 1700px) {
+
   #ai-container {
-    width: 540px;
+    width: 50%;
     height: 600px;
     margin-top: 20px;
-    margin-left: 30px;
+    /* margin-left: 30px; */
   }
-}
-
 
 #editor-container {
-  width: 940px;
+  width: 92%;
   height: 320px;
+  margin-right: 50px;
+  margin-left: 50px;
 }
 
  /* #ai-container-and-editor-container-stack-div {
@@ -273,12 +284,57 @@
 #todo-and-artificialintelligence-section-container {
   display: flex;
   flex-direction: row;
+  margin-bottom: 20px;
+  gap: 50px;
+  margin-right: 50px;
+  margin-left: 50px;
 }
 
 .outercontainer-container {
   display: flex;
-  flex-direction: column;
-  margin-left: -100px;
+  flex-direction: column; 
+  margin-left: 10px;
+  /* border: solid black 1px; */ 
+  /* border: solid black 1px was just for testing */
+}
+
+
+@media (max-width: 1300px) {
+
+
+  #todo-and-artificialintelligence-section-container {
+    flex-direction: column;
+    gap: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  #todo-container-section,
+  #ai-container {
+    width: 100%;
+    height: auto;
+    min-height: 350px;
+    margin-top: 0;
+  }
+
+  .container {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+    padding: 0.5rem;
+  }
+
+  .usecase-container,
+  #charts-container {
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px;
+  }
+
+  #editor-container {
+    width: 98%;
+    margin-left: 1%;
+    margin-right: 1%;
+  }
 }
 
 </style>

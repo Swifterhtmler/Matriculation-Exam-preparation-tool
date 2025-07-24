@@ -107,6 +107,7 @@ function enforceMinMax(event) {
    display: block;
    margin: 10px auto 0 auto;
    width: 150px;
+   background-color: rgb(241, 242, 241);
   }
 
 

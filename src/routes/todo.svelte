@@ -154,7 +154,7 @@ function handleKeyDownList(event) {
   .content-block {
     background-color: #ffffffcc;
     padding: 1.5rem 2rem;
-    border-radius: 12px;
+    border-radius: 10px;
     max-width: 100%;
     height: 600px;
     margin: 0 auto;
@@ -164,6 +164,7 @@ function handleKeyDownList(event) {
     align-items: center;
     margin-top: 20px;
     margin-bottom: 20px;
+    border: solid black 1px;
   }
 
   h2 {

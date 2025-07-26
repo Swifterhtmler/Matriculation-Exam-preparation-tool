@@ -12,6 +12,7 @@
   import Arcchartto from "./arcchartto.svelte";
   import { motivationval } from "./stores.js";
   import Todo from "./todo.svelte";
+  import ContentManagerEditor from "./contentManagerEditor.svelte";
 
 
  import QuillEditor from './QuillEditor.svelte';
@@ -198,6 +199,10 @@
 <div id="editor-container">
 <QuillEditor />
 </div>
+
+
+
+<ContentManagerEditor />
 
 </div>
 

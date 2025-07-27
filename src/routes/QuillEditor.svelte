@@ -139,7 +139,6 @@
     height: 100%;
     min-width: 120px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    border-radius: 10px;
   }
 
   .editor-container {

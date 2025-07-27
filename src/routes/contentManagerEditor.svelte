@@ -206,16 +206,24 @@
 
 <style>
   .content-manager-container {
-    width: 500px; /* Fixed width */
-    height: 740px;
-    margin: 20px auto; /* Center the component */
-    background-color: #f0f8ff; /* Light blue background */
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    height: 100%;
+    min-width: 120px;
+    min-height: 120px;
+    max-width: 100vw;
+    max-height: 100vh;
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Hide any overflowing content */
+    overflow: hidden;
+    font-family: sans-serif;
+    z-index: 998;
+    border: black 1px solid;
+
   }
+
 
   .header-section {
     padding: 10px 15px;

@@ -175,7 +175,7 @@
 <style>
   .content-manager-container {
     width: 500px; /* Fixed width */
-    height: 740px;
+    height: 940px;
     margin: 20px auto; /* Center the component */
     background-color: #f0f8ff; /* Light blue background */
     border-radius: 10px;
@@ -383,10 +383,11 @@
     width: 100%;
     height: calc(100% - 60px); /* Adjust height to fit below header */
     margin: 0;
+    margin-top: 100px;
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Changed from 'center' to 'flex-start' */
+    justify-content: flex-start ; /* Changed from 'center' to 'flex-start' */
     align-items: center;
   }
 </style>

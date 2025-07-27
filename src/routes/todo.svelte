@@ -152,7 +152,7 @@ function handleKeyDownList(event) {
 <style>
 
   .content-block {
-    background-color: #ffffffcc;
+    background-color: #ffffffcc; /* #f0f8ff */ /* new color for swicthing*/
     padding: 1.5rem 2rem;
     border-radius: 10px;
     max-width: 100%;

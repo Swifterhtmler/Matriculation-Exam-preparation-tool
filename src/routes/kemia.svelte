@@ -190,19 +190,21 @@
   <Todo subject="kemia" />
   </div>
 <!-- <div id="ai-container-and-editor-container-stack-div"> -->
-<div id="ai-container">
-  <Artificialintelligence />
+<div id="ai-container"> <!--swapped with editor-container-->
+  <!-- <Artificialintelligence /> -->
+   <ContentManagerEditor />
 </div>
 
 </div>
 
 <div id="editor-container">
-<QuillEditor />
+<!-- <QuillEditor /> -->
+ <Artificialintelligence />
 </div>
 
 
 
-<ContentManagerEditor />
+<!-- <ContentManagerEditor /> -->
 
 </div>
 

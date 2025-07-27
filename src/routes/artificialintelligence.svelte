@@ -506,6 +506,7 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
     max-width: 85%;
     font-size: 0.97em;
     word-break: break-word;
+    z-index: 100;
   }
 
   .user-message {
@@ -517,6 +518,7 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
     max-width: 85%;
     font-size: 0.97em;
     word-break: break-word;
+    z-index: 200;
   }
 
   .loading-indicator {
@@ -616,5 +618,6 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
     bottom: 0;
     text-align: center;
     width: 93%;
+    z-index: 0;
   }
 </style>

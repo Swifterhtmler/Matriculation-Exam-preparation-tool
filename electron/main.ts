@@ -33,7 +33,7 @@ const dataPath = path.join(app.getPath('userData'), 'saved.json');
 
 
 const api = new OpenAI({
-  baseURL: 'https://api.aimlapi.com/v1',
+  baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
   apiKey: config.OPENAI_API_KEY,
 });
 
@@ -41,7 +41,7 @@ const api = new OpenAI({
 ipcMain.handle('openai-chat', async (event, { messages }) => {
   try {
     const result = await api.chat.completions.create({
-      model: 'google/gemma-3n-e4b-it',
+      model: 'gemini-2.0-flash',
       messages,
     });
     return result.choices[0].message.content;

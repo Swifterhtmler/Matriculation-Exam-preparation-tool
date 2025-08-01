@@ -3,11 +3,11 @@ import path from "node:path";
 import started from "electron-squirrel-startup";
 import { fileURLToPath } from 'url';
 import fs from 'fs'
-import { OpenAI } from 'openai';
+// import { OpenAI } from 'openai';
 
 // import 'dotenv/config';
 
-import config from '../config.json' assert { type: "json" };
+// import config from '../config.json' assert { type: "json" };
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -33,27 +33,56 @@ const dataPath = path.join(app.getPath('userData'), 'saved.json');
 // });
 
 
-const api = new OpenAI({
-  baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
-  apiKey: config.OPENAI_API_KEY,
-});
+// const api = new OpenAI({
+//   baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+//   apiKey: config.OPENAI_API_KEY,
+// });
 
 // Handle chat requests from renderer
+// ipcMain.handle('openai-chat', async (event, { messages }) => {
+//   try {
+//     const result = await api.chat.completions.create({
+//       model: 'gemini-2.0-flash',
+//       messages,
+//     });
+//     return result.choices[0].message.content;
+//   } catch (err: any) {
+//     // console.error("OpenAI API error:", err);
+//     // throw new Error(err.message || "Unknown error");
+//      if (err.status === 429) {
+//       console.error("OpenAI API rate limit exceeded (429)");
+//       throw new Error("Rate limit exceeded. Please wait and try again later.");
+//     }
+//     console.error("OpenAI API error:", err);
+//     throw new Error(err.message || "Unknown error");
+//   }
+// });
+
+
+
+
 ipcMain.handle('openai-chat', async (event, { messages }) => {
   try {
-    const result = await api.chat.completions.create({
-      model: 'gemini-2.0-flash',
-      messages,
+    const response = await fetch('https://your-project-name.vercel.app/api/gemini', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ messages })
     });
-    return result.choices[0].message.content;
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error || 'API request failed');
+    }
+
+    return data.choices[0].message.content;
   } catch (err: any) {
-    // console.error("OpenAI API error:", err);
-    // throw new Error(err.message || "Unknown error");
-     if (err.status === 429) {
-      console.error("OpenAI API rate limit exceeded (429)");
+    if (err.message.includes('429') || err.message.includes('rate limit')) {
       throw new Error("Rate limit exceeded. Please wait and try again later.");
     }
-    console.error("OpenAI API error:", err);
+    console.error("API error:", err);
     throw new Error(err.message || "Unknown error");
   }
 });

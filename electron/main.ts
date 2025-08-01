@@ -4,6 +4,7 @@ import started from "electron-squirrel-startup";
 import { fileURLToPath } from 'url';
 import fs from 'fs'
 import { OpenAI } from 'openai';
+
 // import 'dotenv/config';
 
 import config from '../config.json' assert { type: "json" };

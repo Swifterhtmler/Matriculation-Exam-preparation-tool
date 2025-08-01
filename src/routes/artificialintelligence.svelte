@@ -356,6 +356,7 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
 <script lang="ts">
   import { get } from 'svelte/store';
   import { cards, todoItems } from './stores.js';
+  import MathRender from './MathRenderFunctionSvelte.svelte';
 
   let userMessage = "";
   let loading = false;
@@ -434,7 +435,12 @@ Answer in Finnish, or in the language the user uses in their question. Do not su
         class="{msg.role === 'assistant' ? 'assistant-message' : 'user-message'}"
         style="white-space: pre-wrap;"
       >
-        {msg.content}
+       <!-- <MathRenderFunctionSvelte aiResponse={msg.content} /> -->
+         {#if msg.role === 'assistant'}
+          <MathRender aiResponse={msg.content} />
+        {:else}
+          {msg.content}
+        {/if}
       </div>
     {/each}
     {#if loading}

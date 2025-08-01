@@ -31,6 +31,9 @@ importers:
       quill:
         specifier: ^2.0.3
         version: 2.0.3
+      svelte-math:
+        specifier: ^0.0.2
+        version: 0.0.2(svelte@5.32.1)
     devDependencies:
       '@electron-forge/cli':
         specifier: ^7.8.1
@@ -3089,6 +3092,11 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
+  svelte-math@0.0.2:
+    resolution: {integrity: sha512-GTxoo6glQtIqRq9MRdWarxZ0NM7DegI1ZVQ2eJu4xFtHcZKTY/KNIntE4KQui4y1hmBAVZ+wm7FdoOxiWsefCA==}
+    peerDependencies:
+      svelte: ^5.0.0
+
   svelte@5.32.1:
     resolution: {integrity: sha512-tT02QOeF0dbSIQ+/rUZw+76DyO6ATHvZJGOM2A/Ed6fBwZwUxqIun3beErpePAtwFIK3Mi9k2QAnhFVvUBun8g==}
     engines: {node: '>=18'}
@@ -3118,6 +3126,10 @@ packages:
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
+
+  temml@0.11.10:
+    resolution: {integrity: sha512-0ciEOXof8wwQpbIVf4aoONus6wqUuJTScqgWhkzldpnrSf7roqDTFmX7QRJttXWfi0TtcsY2u4c1t56agtNlWQ==}
+    engines: {node: '>=18.13.0'}
 
   temp@0.9.4:
     resolution: {integrity: sha512-yYrrsWnrXMcdsnu/7YMYAofM1ktpL5By7vZhf15CrXijWWrEYZks5AXBudalfSWJLlnen/QUJUB5aoB0kqZUGA==}
@@ -6798,6 +6810,11 @@ snapshots:
     transitivePeerDependencies:
       - picomatch
 
+  svelte-math@0.0.2(svelte@5.32.1):
+    dependencies:
+      svelte: 5.32.1
+      temml: 0.11.10
+
   svelte@5.32.1:
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -6867,6 +6884,8 @@ snapshots:
       minizlib: 3.0.2
       mkdirp: 3.0.1
       yallist: 5.0.0
+
+  temml@0.11.10: {}
 
   temp@0.9.4:
     dependencies:

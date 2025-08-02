@@ -63,7 +63,7 @@ const dataPath = path.join(app.getPath('userData'), 'saved.json');
 
 ipcMain.handle('openai-chat', async (event, { messages }) => {
   try {
-    const response = await fetch('https://your-project-name.vercel.app/api/gemini', {
+    const response = await fetch('https://matriculation-exam-preparation-tool-two.vercel.app/api/gemini', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

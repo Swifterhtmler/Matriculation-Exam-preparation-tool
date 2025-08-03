@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cards } from "./stores.js"; // Re-introducing the store import
+  import { cards } from "./stores.js"; 
 
   export let subject = ""; 
 
@@ -150,6 +150,46 @@
       addCard(event); // Call addCard directly
     }
   }
+
+
+
+let bulkImportText = ""; // For textarea input
+let showBulkImport = false; // Toggle for bulk import UI
+
+// let text = bulkImportText;
+
+function parseBulkCards(text) {
+  const lines = text.trim().split('\n');
+  const cards = [];
+  
+  for (let i = 0; i < lines.length; i += 2) {
+    if (i + 1 < lines.length) {
+      cards.push({
+        front: lines[i].trim(),
+        back: lines[i + 1].trim()
+      });
+    }
+  }
+  return cards;
+}
+
+function addBulkCards() {
+  if (bulkImportText.trim() === "") return;
+  
+  const bulkCards = parseBulkCards(bulkImportText);
+  
+  cards.update(allSubjectsCards => {
+    const updated = { ...allSubjectsCards };
+    updated[subject] = [...(updated[subject] ?? []), ...bulkCards];
+    return updated;
+  });
+  
+  bulkImportText = "";
+  showBulkImport = false;
+  console.log(`Added ${bulkCards.length} cards to ${subject}!`);
+}
+
+
 </script>
 
 <div class="container">
@@ -213,6 +253,15 @@
         <button onclick={previewCard}>
          Katsele lisättyjä Kortteja
         </button>
+        <button onclick={() => showBulkImport = !showBulkImport}>Bulk Import</button>
+
+      {#if showBulkImport}
+        <div class="bulk-import">
+         <textarea bind:value={bulkImportText} placeholder="Paste your terms here..."></textarea>
+         <button onclick={addBulkCards}>Add All Cards</button>
+         <button onclick={() => showBulkImport = false}>Cancel</button>
+        </div>
+      {/if}
       </div>
 
       {#if number === 0}

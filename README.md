@@ -1,116 +1,97 @@
-# SveltronKit
 
-A minimal template for building Electron apps with SvelteKit.
+# YO-StudySuite
 
-Includes native support for Typscript and uses Electron's official recommended Electron Forge for packaging.
+Study "OS" for preparing to multi subject exams.
 
-Everything you can do in SvelteKit, you can do in SveltronKit; meaning that you can use component
-libraries like [Shadcn-Svelte](https://next.shadcn-svelte.com/).
 
-> [!IMPORTANT]
-> This template uses SvelteKit's [hash router](https://svelte.dev/docs/kit/configuration#router) to
-> create a single-page app. The only difference you'll have to look out for is to start all your routed
-> links with `#/` instead of `/`.
 
-## Dependencies & Frameworks
+## Features
 
-- [SvelteKit](https://kit.svelte.dev/)
-- [Electron](https://www.electronjs.org/)
-- [Electron Forge](https://www.electronforge.io/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [TailwindCSS](https://tailwindcss.com/)
+- Fast
+- Offline 
+- Fullscreen mode
+- Cross platform (only OSX and Windows supported currently but installers for debian coming soon)
+- Cross subject Ai integration
+- Multi subject tabs
+- Motivation tracker
+- One tab subject creation
+- Markdown editor
+- Flashcards
+- To-do
 
-> [!NOTE]
-> I've included TailwindCSS in this template because I use it in my own projects, but you can remove
-> it easily if you don't want it.
 
-## Getting Started
+## Installation
 
-> [!WARNING]
-> This project uses [`pnpm`](https://pnpm.io/) and uses [patching](https://pnpm.io/cli/patch) to work
-> around some issues with SvelteKit. When this [PR](https://github.com/sveltejs/kit/pull/13812) merges,
-> you can remove the patching and use the latest version of SvelteKit.
+Intall the dmg or .exe from [releases tab](https://github.com/Swifterhtmler/Matriculation-Exam-preparation-tool/releases)
 
-Start by installing the dependencies:
 
-```
-pnpm install
-```
+    
+## FAQ
 
-**Development:**
+#### Who is this made for ?
 
-```
-pnpm run start
-```
+This software is made for Finnish students preparing for their matriculation exam, but anyone with similar long term study needs can use it, it is only optimized for Finnish matriculation exams in it's architecture.
 
-[Electron Forge](https://www.electronforge.io/) with the [Vite plugin](https://www.electronforge.io/plugins/vite)
-will take care of running the development server and building the app for you. You don't need to run
-`vite dev` or `vite build` yourself. This also means that it supports hot module replacement (HMR).
+#### Is it free ?
 
-**Production:**
+Currently Yo-StudySuite is 100% free and can be downloaded and used for personal study.
 
-```
-pnpm run package
-```
+#### How do I receive updates ?
 
-This will build the app and you can find the output in the `out` directory. You can run the production
-app by opening the `.app` file in the `out` directory. This will not create your app's installer
-for distribution though.
+Currently Yo-StudySuite is not hosted on any backend and is installed on users client so all the updates are applied when user downlaods new version of the software. Each version is it's unique release and does not include any data trasnfer tools yet.
 
-To create a distributable installer, you can use:
+#### Why use Yo-StudySuite ?
 
-```
-pnpm run make
+Yo-StudySuite offers complete study "os" for any comprehensive exam preparation, it removes the context switching need that most study platforms have and is designed to be all in one out of the box solution for any student. 
+
+#### Can I change the color theme ?
+
+Changing color scheme from client side is not possible, but by editing the +page.svelte css variables users can change the mian color scheme of the app.
+
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/Swifterhtmler/YO-Practise.git
 ```
 
-This will create a distributable installer for your app. You can configure this in the `makers` section
-in `forge.config.ts`. Reference the [makers documentation](https://www.electronforge.io/makers) for more
-information.
+Go to the project directory
 
-# Electron Crash Course
-
-> [!NOTE]
-> This is a super simplified version of the Electron documentation meant to give you a general idea
-> of how Electron works and how each file corresponds to responsibilities in Electron. For a more
-> accurate description of how Electron works, you can refer to the [official documentation](https://www.electronjs.org/docs).
-
-I found that most of the problems I encountered when setting up Electron were because I didn't know
-how Electron works and that the documentation was too dense to get up to speed with, so I'll include
-a crash course here. _I will be making a lot of analogies to web development_ as it seems like a lot
-of people who are new to Electron come from web development.
-
-Because everything in Electron is client based, you'll need to host your own server if you want to
-access any sensitive logic like a database or authentication, etc.
-
-## main.ts
-
-This file defines what the main process will do. The process runs your app. It's the one that
-creates and manages windows and also has permissions to access the file system. You also define
-"_signals_"/"_endpoints_", through IPC, that let the renderer process (browser that runs your app)
-can "_call_" to interact with the file system.
-
-By default, Electron will block off file system access to the renderer process as a security measure,
-which is the reason why you need to use IPC to interact with the file system.
-
-## preload.ts
-
-Think about this as a "bridge" or a "network"/"proxy" between the main process and the renderer process.
-You specify what functions that the renderer process can call and these functions will usually be
-interacting with the file system through the main process.
-
-## renderer
-
-The renderer process is the browser that runs your app. Just treat this like another SvelteKit app.
-
-## Overview
-
-```mermaid
-flowchart LR
-  subgraph main[Main Process]
-    electron
-  end
-  subgraph renderer[Renderer Process]
-    browser
-  end
-  electron <-- preload --> renderer
+```bash
+  cd YO-Practise
 ```
+
+Install dependencies
+
+```bash
+  npm install or npx install
+```
+
+Start the server
+
+```bash
+   pnpm run start
+```
+
+
+Open http://localhost:5173 or http://localhost:5174
+
+
+
+
+## Authors
+
+- [@swifterhtmler](https://www.github.com/swifterhtmler)
+
+
+## Contributing
+
+Contributions are always welcome!
+
+
+
+
+## 🔗 Links
+[![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://swifterhtmler.github.io/Portfolio/)

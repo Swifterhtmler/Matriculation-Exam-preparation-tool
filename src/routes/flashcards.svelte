@@ -245,13 +245,13 @@ function parseBulkCards(text) {
         <button onclick={previewCard}>
          Katsele lisättyjä Kortteja
         </button>
-        <button onclick={() => showBulkImport = !showBulkImport}>Bulk Import</button>
+        <button onclick={() => showBulkImport = !showBulkImport}>Automaattinen lisäys</button>
 
       {#if showBulkImport}
         <div class="bulk-import">
-         <textarea bind:value={bulkImportText} placeholder="Paste your terms here..." style="width: 300px; height: 100px; margin: 8px;"></textarea>
-         <button onclick={addBulkCards}>Add All Cards</button>
-         <button onclick={() => showBulkImport = false}>Cancel</button>
+         <textarea bind:value={bulkImportText} placeholder="Sijoita termisi tähän..." style="width: 300px; height: 100px; margin: 8px;"></textarea>
+         <button onclick={addBulkCards}>Lisää kaikki kortit</button>
+         <button onclick={() => showBulkImport = false}>Peru</button>
         </div>
       {/if}
       </div>

@@ -12,6 +12,7 @@
   let editorElement: HTMLDivElement;
   let quill: any = null;
   let isInitialized = false;
+  let currentSubject = subject; // Track the current subject
 
   onMount(async () => {
     // Only proceed if we have a valid subject that looks like a folder key
@@ -48,11 +49,12 @@
       const html = quill.root.innerHTML;
       
       // Update the store for this specific subject
-      if (subject && subject.includes('__')) {
-        console.log(`Saving content for ${subject}:`, html.substring(0, 50) + '...');
+      if (currentSubject && currentSubject.includes('__')) {
+        console.log(`Saving content for ${currentSubject}:`, html.substring(0, 50) + '...');
         quillEditorContent.update(content => {
-          content[subject] = html;
-          return content;
+          const updated = { ...content }; // Create a new object
+          updated[currentSubject] = html;
+          return updated;
         });
       }
 
@@ -62,7 +64,10 @@
       }
     });
 
-    isInitialized = true;
+    // Mark as initialized after a short delay to ensure content is loaded
+    setTimeout(() => {
+      isInitialized = true;
+    }, 100);
 
     return () => {
       if (quill) {
@@ -72,24 +77,44 @@
   });
 
   function loadContentForSubject() {
-    if (!quill || !subject || !subject.includes('__')) return;
+    if (!quill || !currentSubject || !currentSubject.includes('__')) return;
     
     // Get current content for this subject
-    const currentContent = $quillEditorContent[subject];
+    const currentContent = $quillEditorContent[currentSubject];
     let contentToLoad = currentContent || '<p>Start writing...</p>';
     
-    console.log(`Loading content for ${subject}:`, contentToLoad.substring(0, 50) + '...');
+    console.log(`Loading content for ${currentSubject}:`, contentToLoad.substring(0, 50) + '...');
     
     // Temporarily disable initialization flag to prevent saving during load
     isInitialized = false;
-    quill.root.innerHTML = contentToLoad;
-    isInitialized = true;
+    
+    // Use Quill's setContents method instead of directly setting innerHTML
+    // This preserves the editor's delta format and prevents formatting issues
+    try {
+      if (contentToLoad === '<p>Start writing...</p>' || contentToLoad === '<p><br></p>') {
+        quill.setContents([]);
+      } else {
+        quill.root.innerHTML = contentToLoad;
+      }
+    } catch (error) {
+      console.warn('Error loading content, using fallback:', error);
+      quill.setContents([]);
+    }
+    
+    // Re-enable after content is loaded
+    setTimeout(() => {
+      isInitialized = true;
+    }, 50);
   }
 
   // Watch for subject changes and update content accordingly
   $effect(() => {
-    if (quill && subject && subject.includes('__') && isInitialized) {
-      loadContentForSubject();
+    if (subject !== currentSubject && quill) {
+      console.log(`Subject changed from ${currentSubject} to ${subject}`);
+      currentSubject = subject;
+      if (subject && subject.includes('__')) {
+        loadContentForSubject();
+      }
     }
   });
 
@@ -99,14 +124,17 @@
   }
 
   export function setContent(html: string) {
-    if (quill && subject && subject.includes('__')) {
+    if (quill && currentSubject && currentSubject.includes('__')) {
       isInitialized = false;
       quill.root.innerHTML = html;
       quillEditorContent.update(content => {
-        content[subject] = html;
-        return content;
+        const updated = { ...content }; // Create a new object
+        updated[currentSubject] = html;
+        return updated;
       });
-      isInitialized = true;
+      setTimeout(() => {
+        isInitialized = true;
+      }, 50);
     }
   }
 

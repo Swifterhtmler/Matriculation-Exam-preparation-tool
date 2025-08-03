@@ -3,6 +3,7 @@ import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
 import { MakerDeb } from "@electron-forge/maker-deb";
 import { MakerRpm } from "@electron-forge/maker-rpm";
+import { MakerDMG } from "@electron-forge/maker-dmg";
 import { VitePlugin } from "@electron-forge/plugin-vite";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
@@ -10,14 +11,30 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: "static/icon",
+    icon: "static/icon", // This will use icon.icns on Mac, icon.ico on Windows
+    name: "Yo StudySuite",
+    executableName: "yo-studysuite",
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
-    new MakerZIP({}, ["darwin"]),
-    new MakerRpm({}),
-    new MakerDeb({}),
+    // Windows makers
+    new MakerSquirrel({
+      name: "yo-studysuite",
+      setupIcon: "static/icon.ico", // Specific Windows icon
+      setupExe: "YoStudySuiteSetup.exe",
+      noMsi: true
+    }),
+    new MakerZIP({}, ["win32"]), // ZIP for Windows
+    
+    // macOS makers
+    new MakerDMG({
+      format: "ULFO"
+    }, ["darwin"]),
+    new MakerZIP({}, ["darwin"]), // ZIP for macOS
+    
+    // Linux makers
+    new MakerRpm({}, ["linux"]),
+    new MakerDeb({}, ["linux"]),
   ],
   plugins: [
     new VitePlugin({

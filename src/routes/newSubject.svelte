@@ -209,7 +209,7 @@
 
   #editor-container {
     width: 92%;
-    height: 320px;
+    height: 480px;
     margin-right: 50px;
     margin-left: 50px;
   }

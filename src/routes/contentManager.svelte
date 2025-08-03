@@ -175,7 +175,7 @@
 <style>
   .content-manager-container {
     width: 500px; /* Fixed width */
-    height: 940px;
+    height: 1100px;
     margin: 20px auto; /* Center the component */
     background-color: #f0f8ff; /* Light blue background */
     border-radius: 10px;

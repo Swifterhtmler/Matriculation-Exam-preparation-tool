@@ -14,7 +14,7 @@
     popupCardFlipped = !popupCardFlipped;
   }
 
-    function removeCurrentCard() {
+  function removeCurrentCard() {
     if (subjectCards.length === 0) return; // No cards to remove
 
     cards.update(allSubjectsCards => {
@@ -38,8 +38,6 @@
     // The next card will load unflipped if the index changes.
     console.log(`Card at index ${currentCardIndex} removed from ${subject}!`);
   }
-
-
 
   function showNextCard() {
     if (currentCardIndex < subjectCards.length - 1) {
@@ -151,12 +149,8 @@
     }
   }
 
-
-
-let bulkImportText = ""; // For textarea input
-let showBulkImport = false; // Toggle for bulk import UI
-
-// let text = bulkImportText;
+  let bulkImportText = ""; // For textarea input
+  let showBulkImport = false; // Toggle for bulk import UI
 
 function parseBulkCards(text) {
   const lines = text.trim().split('\n');
@@ -165,31 +159,29 @@ function parseBulkCards(text) {
   for (let i = 0; i < lines.length; i += 2) {
     if (i + 1 < lines.length) {
       cards.push({
-        front: lines[i].trim(),
-        back: lines[i + 1].trim()
+        front: lines[i].trim(),      // FIXED: First line becomes front
+        back: lines[i + 1].trim()    // FIXED: Second line becomes back
       });
     }
   }
   return cards;
 }
 
-function addBulkCards() {
-  if (bulkImportText.trim() === "") return;
-  
-  const bulkCards = parseBulkCards(bulkImportText);
-  
-  cards.update(allSubjectsCards => {
-    const updated = { ...allSubjectsCards };
-    updated[subject] = [...(updated[subject] ?? []), ...bulkCards];
-    return updated;
-  });
-  
-  bulkImportText = "";
-  showBulkImport = false;
-  console.log(`Added ${bulkCards.length} cards to ${subject}!`);
-}
-
-
+  function addBulkCards() {
+    if (bulkImportText.trim() === "") return;
+    
+    const bulkCards = parseBulkCards(bulkImportText);
+    
+    cards.update(allSubjectsCards => {
+      const updated = { ...allSubjectsCards };
+      updated[subject] = [...(updated[subject] ?? []), ...bulkCards];
+      return updated;
+    });
+    
+    bulkImportText = "";
+    showBulkImport = false;
+    console.log(`Added ${bulkCards.length} cards to ${subject}!`);
+  }
 </script>
 
 <div class="container">
@@ -257,7 +249,7 @@ function addBulkCards() {
 
       {#if showBulkImport}
         <div class="bulk-import">
-         <textarea bind:value={bulkImportText} placeholder="Paste your terms here..."></textarea>
+         <textarea bind:value={bulkImportText} placeholder="Paste your terms here..." style="width: 300px; height: 100px; margin: 8px;"></textarea>
          <button onclick={addBulkCards}>Add All Cards</button>
          <button onclick={() => showBulkImport = false}>Cancel</button>
         </div>
@@ -269,8 +261,6 @@ function addBulkCards() {
           Aloita lisäämällä uusi kortti yllä olevilla kentillä.
         </p>
       {/if}
-
-      <!-- <hr style="width: 100%; margin-top: 20px;"> -->
      
     </div>
   </section>
@@ -279,7 +269,8 @@ function addBulkCards() {
   <div class="popup-overlay" onkeydown={escapeEvent} tabindex="-1" role="dialog" aria-modal="true">
     <div id="overlayPopUpPreview">
       <div class="topBarPreviewWindow">
-         <h5>Muistikortit ({currentCardIndex + 1}/{subjectCards.length})</h5> <button onclick={closePopup}>X</button>
+         <h5>Muistikortit ({currentCardIndex + 1}/{subjectCards.length})</h5> 
+         <button onclick={closePopup}>X</button>
       </div>
 
       <div class="popup-body-single-card">
@@ -290,7 +281,8 @@ function addBulkCards() {
           </p>
         {:else}
           <div
-            class="card popup-display-card" class:flipped={popupCardFlipped}
+            class="card popup-display-card" 
+            class:flipped={popupCardFlipped}
             onclick={togglePopupCardFlip}
             onkeydown={(e) => { // Accessibility: keyboard flip
               if (e.key === 'Enter' || e.key === ' ') {
@@ -308,17 +300,20 @@ function addBulkCards() {
               {subjectCards[currentCardIndex].back}
             </div>
           </div>
-
+        {/if}
+        
+        <!-- NAVIGATION BUTTONS COMPLETELY OUTSIDE THE CARD AND IF BLOCK -->
+        {#if subjectCards.length > 0}
           <div class="card-navigation-buttons">
-            <button onclick={showPreviousCard} disabled={subjectCards.length === 0 || currentCardIndex === 0}>
+            <button onclick={showPreviousCard} disabled={currentCardIndex === 0}>
               Edellinen
             </button>
 
-            <button onclick={removeCurrentCard} disabled={subjectCards.length === 0} style="background-color: #d32f2f;">
+            <button onclick={removeCurrentCard} disabled={false} style="background-color: #d32f2f;">
               Poista kortti
             </button>
 
-            <button onclick={showNextCard} disabled={subjectCards.length === 0 || currentCardIndex === subjectCards.length - 1}>
+            <button onclick={showNextCard} disabled={currentCardIndex === subjectCards.length - 1}>
               Seuraava
             </button>
           </div>
@@ -338,7 +333,7 @@ function addBulkCards() {
     border-radius: 12px;
     max-width: 500px;
     min-height: fit-content;
-    height: 600px;
+    height: 800px;
     margin: 0 auto;
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     display: flex;
@@ -440,6 +435,13 @@ function addBulkCards() {
     margin: 8px 0;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .bulk-import {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
   }
 
   /* --- Styles for the Dimming Overlay (Covers full screen) --- */
@@ -560,6 +562,4 @@ function addBulkCards() {
     background-color: #ccc;
     cursor: not-allowed;
   }
-
-  /* --- Removed old .popup-scrollable-content and its children, as replaced by single-card view --- */
 </style>

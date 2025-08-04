@@ -60,16 +60,16 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd YO-Practise
+  cd Matriculation-Exam-preparation-tool
 ```
 
 Install dependencies
 
 ```bash
-  npm install or npx install
+  pnpm install
 ```
 
-Start the server
+Start the dev server
 
 ```bash
    pnpm run start

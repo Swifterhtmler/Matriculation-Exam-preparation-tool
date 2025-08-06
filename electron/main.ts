@@ -46,7 +46,9 @@ if (started) {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dataPath = path.join(app.getPath('userData'), 'saved.json');
+const userDataDir = app.getPath('userData');
+const saveFolder = path.join(userDataDir, "folder");
+const dataPath = path.join(saveFolder, 'saved.json');
 
 // ipcMain.handle('openai-chat', async (event, { messages }) => {
 //   try {
@@ -120,6 +122,9 @@ ipcMain.handle('openai-chat', async (event, { messages }) => {
 
 
 ipcMain.handle('save-file', (event, data) => {
+  if (!fs.existsSync(saveFolder)) {
+  fs.mkdirSync(saveFolder, { recursive: true });
+ }
   console.log('Saving to:', dataPath);
   fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
   return true;

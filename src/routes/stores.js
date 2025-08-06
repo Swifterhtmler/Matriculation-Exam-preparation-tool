@@ -38,6 +38,10 @@ export const editorDivStore = writable(null)
 // CHANGED: QuillEditor content now uses flattened keys like cards
 export const quillEditorContent = writable({})
 
+
+export const customSubjects = writable([]);
+
+let lastCustomSubjects = null;
 let initialized = false
 let isLoading = false
 let isSaving = false
@@ -55,6 +59,13 @@ async function initializeStores() {
   try {
     const data = await window.electronAPI.loadFile()
     console.log("Loaded data:", data)
+
+    // custom subjects
+    if (data?.customSubjects) {
+      customSubjects.set(data.customSubjects)
+    } else {
+      customSubjects.set([])
+    }
 
     // Set initial values without triggering saves
     if (data?.todoItems) todoItems.set(data.todoItems)
@@ -121,6 +132,7 @@ function saveAll() {
     motivationval: get(motivationval),
     editorText: get(editorTextStore),
     quillEditorContent: get(quillEditorContent), // Now an object with flattened keys
+    customSubjects: get(customSubjects),
   }
 
   console.log("Saving payload:", payload)
@@ -212,6 +224,14 @@ quillEditorContent.subscribe((value) => {
     debouncedSave()
   }
 })
+
+customSubjects.subscribe((value) => {
+  if (initialized && !isLoading && !isSaving && JSON.stringify(value) !== JSON.stringify(lastCustomSubjects)) {
+    lastCustomSubjects = structuredClone(value)
+    console.log("Custom subjects changed, saving...")
+    debouncedSave()
+  }
+});
 
 // Export initialization function
 export { initializeStores }

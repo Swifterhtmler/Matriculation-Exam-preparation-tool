@@ -17,7 +17,15 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      name: "YOStudySuite",
+      setupIcon: "static/icon.ico",
+      setupExe: "YoStudySuiteSetup.exe",
+      noMsi: true,
+ 
+      authors: "swifterhtmler",
+      description: "Study os made for preparing for comprehensive exams and such",
+    }),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({}),
     new MakerDeb({}),

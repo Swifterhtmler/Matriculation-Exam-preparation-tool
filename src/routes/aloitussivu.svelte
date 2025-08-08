@@ -115,6 +115,26 @@
     margin-right: 20px;
   }
 
+  @media screen and (max-width: 2000px) and (min-width: 1000px) {
+    #charts-container {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    gap: 20px;
+    background-color: #e5ecf0;
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+
+}
+
   .usecase-container {
     margin-top: 30px;
     background-color: #e5ecf0;
@@ -128,6 +148,15 @@
     width: 540px;
     height: 600px;
     margin-left: 30px;
+  }
+
+  @media screen and (max-width: 1730px) and (min-width: 1200px) {
+    #ai-div {
+      margin-top: 20px;
+      width: 195%;
+      height: 600px;
+      margin-left: 30px;
+    }
   }
 
 </style>

@@ -82,6 +82,16 @@ function enforceMinMax(event) {
     border-radius: 10px;
   }
 
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    .data {
+      width: 490px !important; /* 700 * 0.7 */
+      height: 231px !important; /* 330 * 0.7 */
+    }
+    .h-\[300px\] {
+      height: 210px !important; /* 300 * 0.7 */
+    }
+  }
+
   input {
     width: 160px !important;
     height: 28px !important;

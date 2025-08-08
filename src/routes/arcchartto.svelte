@@ -22,8 +22,21 @@
 </script>
 
 
-<div class="w-[300px] h-[300px] border bg-gray-100 rounded-2xl flex flex-col items-center justify-center">
-  <div class="w-[200px] h-[200px] relative">
+<style>
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .laptop-size {
+    width: 240px !important;
+    height: 240px !important;
+  }
+  .laptop-size-inner {
+    width: 160px !important;
+    height: 160px !important;
+  }
+}
+</style>
+
+<div class="w-[300px] h-[300px] border bg-gray-100 rounded-2xl flex flex-col items-center justify-center laptop-size">
+  <div class="w-[200px] h-[200px] relative laptop-size-inner">
     <Chart>
       <Svg center>
         <Arc
@@ -41,7 +54,6 @@
       <span class="text-2xl font-bold text-gray-700">{value}</span>
     </div>
     <span class=" block w-full text-1xl font-bold text-gray-600 text-center">{usecase}</span>
-  
   </div>
 </div>
 

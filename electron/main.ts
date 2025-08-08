@@ -3,11 +3,16 @@ import path from "node:path";
 import started from "electron-squirrel-startup";
 import { fileURLToPath } from 'url';
 import fs from 'fs'
+// import { createServer } from 'http';
+// import { readFileSync } from 'fs';
+// import { join, extname } from 'path';
+
 // import { OpenAI } from 'openai';
 
 // import 'dotenv/config';
 
 // import config from '../config.json' assert { type: "json" };
+
 
 
 

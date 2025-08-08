@@ -99,7 +99,7 @@
 {#if showCharts}
 <div id="charts-container">
   <Arcchart usecase="{subjectName} Muistikortit" subject={subjectName.toLowerCase()}/>
-  <Arcchartto usecase={`${subjectName} Tehtävien määrä`} subject={subjectName.toLowerCase()} />
+  <Arcchartto usecase={`${subjectName} tehtävät`} subject={subjectName.toLowerCase()} />
   <Linechart />
 </div>
 {/if}

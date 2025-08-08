@@ -98,7 +98,7 @@
 
 
 
-<Arcchartto usecase={"Kemian Tehtävien määrä"} subject="kemia" />
+<Arcchartto usecase={"Kemian Tehtävät"} subject="kemia" />
 
 <!-- <button on:click={saveAllData}>Save</button> -->
 
@@ -186,14 +186,16 @@
 <div class="outercontainer-container">
 <div id="todo-and-artificialintelligence-section-container">
 
-  <div id="todo-container-section">
-  <Todo subject="kemia" />
-  </div>
+
 <!-- <div id="ai-container-and-editor-container-stack-div"> -->
 <div id="ai-container"> <!--swapped with editor-container-->
   <!-- <Artificialintelligence /> -->
    <ContentManagerEditor />
 </div>
+
+  <div id="todo-container-section">
+  <Todo subject="kemia" />
+  </div>
 
 </div>
 
@@ -210,7 +212,16 @@
 
 <!-- </div> -->
 </div>
+
+<div id="editor-container-some">
+<!-- <QuillEditor /> -->
+ <Artificialintelligence />
 </div>
+
+
+</div>
+
+
 
 <style>
   
@@ -254,7 +265,7 @@
 
   #todo-container-section {
     width: 50%;
-    height: 600px;
+    height: 500px;
   }
 
   .usecase-container {
@@ -342,6 +353,53 @@
     margin-left: 1%;
     margin-right: 1%;
   }
+
+}
+
+
+@media screen and (max-width: 1700px) and (min-width: 1100px) {
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    gap: 0;
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 1rem;
+    min-height: 100vh;
+    align-items: start;
+    margin-left: 40px;
+  }
+
+    #ai-container {
+    width: 100%;
+    height: 465px;
+    margin-top: 20px;
+   }
+
+
+   #editor-container {
+    display: none;
+   }
+
+   #editor-container-some {
+    width: 90%;
+    margin-left: 50px;
+    height: 380px;
+   }
+
+}
+
+@media screen and (max-width: 1100px) {
+     #editor-container-some {
+      display: none;
+   }
+}
+
+@media screen and (min-width: 1700px) {
+      #editor-container-some {
+      display: none;
+     }
 }
 
 </style>

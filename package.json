@@ -7,6 +7,8 @@
   "type": "module",
   "main": ".vite/build/main.js",
   "scripts": {
+    "dev:web": "vite dev --host 0.0.0.0 --port 3000",
+    "dev": "concurrently \"pnpm run dev:web\" \"sleep 3 && pnpm run dev:electron\"",
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -45,6 +47,7 @@
     "@types/electron-squirrel-startup": "^1.0.2",
     "@types/node": "^22",
     "@types/quill": "^2.0.14",
+    "concurrently": "^9.2.0",
     "electron": "^36.7.3",
     "electron-builder": "^26.0.12",
     "jsdom": "^26.0.0",

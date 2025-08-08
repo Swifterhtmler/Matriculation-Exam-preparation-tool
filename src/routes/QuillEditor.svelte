@@ -176,6 +176,7 @@
     overflow: hidden;
     border: 1px solid #e1e5e9;
     height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
   }
@@ -211,6 +212,9 @@
     line-height: 1.6;
     color: #333;
     flex-grow: 1;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
 
   :global(.ql-editor.ql-blank::before) {

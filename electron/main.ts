@@ -3,18 +3,6 @@ import path from "node:path";
 import started from "electron-squirrel-startup";
 import { fileURLToPath } from 'url';
 import fs from 'fs'
-// import { createServer } from 'http';
-// import { readFileSync } from 'fs';
-// import { join, extname } from 'path';
-
-// import { OpenAI } from 'openai';
-
-// import 'dotenv/config';
-
-// import config from '../config.json' assert { type: "json" };
-
-
-
 
 const createWindow = () => {
   // Create the browser window.
@@ -42,60 +30,70 @@ const createWindow = () => {
   }
 };
 
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const userDataDir = app.getPath('userData');
-const saveFolder = path.join(userDataDir, "folder");
-const dataPath = path.join(saveFolder, 'saved.json');
 
-// ipcMain.handle('openai-chat', async (event, { messages }) => {
-//   try {
-//     const result = await api.chat.completions.create({
-//       model: 'google/gemma-3n-e4b-it',
-//       messages,
-//     });
-//     return result.choices[0].message.content;
-//   } catch (err) {
-//     console.error("OpenAI API error:", err);
-//     throw new Error(err.message || "Unknown error");
-//   }
-// });
+// Function to determine if running in portable mode
+const isPortableMode = () => {
+  // Method 1: Check for a portable.txt file next to the executable
+  const portableMarkerFile = app.isPackaged 
+    ? path.join(path.dirname(process.execPath), 'portable.txt')
+    : path.join(__dirname, 'portable.txt');
+  
+  if (fs.existsSync(portableMarkerFile)) {
+    return true;
+  }
+  
+  // Method 2: Check command line arguments
+  if (process.argv.includes('--portable')) {
+    return true;
+  }
+  
+  // Method 3: Check environment variable
+  if (process.env.PORTABLE_MODE === 'true') {
+    return true;
+  }
+  
+  return false;
+};
 
+// Determine save location based on mode
+const getSaveLocation = () => {
+  if (isPortableMode()) {
+    // Portable mode: save relative to executable/script directory
+    console.log('Running in PORTABLE mode');
+    const appDir = app.isPackaged 
+      ? path.dirname(process.execPath)  // Packaged app: use executable directory
+      : __dirname;                      // Development: use script directory
+    
+    return {
+      mode: 'portable',
+      saveFolder: path.join(appDir, "data"),
+      dataPath: path.join(appDir, "data", 'saved.json')
+    };
+  } else {
+    // Desktop mode: use system user data directory
+    console.log('Running in DESKTOP mode');
+    const userDataDir = app.getPath('userData');
+    
+    return {
+      mode: 'desktop',
+      saveFolder: path.join(userDataDir, "folder"),
+      dataPath: path.join(userDataDir, "folder", 'saved.json')
+    };
+  }
+};
 
-// const api = new OpenAI({
-//   baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
-//   apiKey: config.OPENAI_API_KEY,
-// });
+const { mode, saveFolder, dataPath } = getSaveLocation();
 
-// Handle chat requests from renderer
-// ipcMain.handle('openai-chat', async (event, { messages }) => {
-//   try {
-//     const result = await api.chat.completions.create({
-//       model: 'gemini-2.0-flash',
-//       messages,
-//     });
-//     return result.choices[0].message.content;
-//   } catch (err: any) {
-//     // console.error("OpenAI API error:", err);
-//     // throw new Error(err.message || "Unknown error");
-//      if (err.status === 429) {
-//       console.error("OpenAI API rate limit exceeded (429)");
-//       throw new Error("Rate limit exceeded. Please wait and try again later.");
-//     }
-//     console.error("OpenAI API error:", err);
-//     throw new Error(err.message || "Unknown error");
-//   }
-// });
-
-
-
+console.log(`App Mode: ${mode.toUpperCase()}`);
+console.log(`Save Folder: ${saveFolder}`);
+console.log(`Data Path: ${dataPath}`);
 
 ipcMain.handle('openai-chat', async (event, { messages }) => {
   try {
@@ -114,7 +112,7 @@ ipcMain.handle('openai-chat', async (event, { messages }) => {
     }
 
     return data.choices[0].message.content;
-  } catch (err: any) {
+  } catch (err) {
     if (err.message.includes('429') || err.message.includes('rate limit')) {
       throw new Error("Rate limit exceeded. Please wait and try again later.");
     }
@@ -123,20 +121,26 @@ ipcMain.handle('openai-chat', async (event, { messages }) => {
   }
 });
 
-
-
+// Add IPC handler to get current mode
+ipcMain.handle('get-app-mode', () => {
+  return {
+    mode,
+    saveFolder,
+    dataPath
+  };
+});
 
 ipcMain.handle('save-file', (event, data) => {
   if (!fs.existsSync(saveFolder)) {
-  fs.mkdirSync(saveFolder, { recursive: true });
- }
-  console.log('Saving to:', dataPath);
+    fs.mkdirSync(saveFolder, { recursive: true });
+  }
+  console.log(`Saving to (${mode} mode):`, dataPath);
   fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
   return true;
 });
 
 ipcMain.handle('load-file', async () => {
-  console.log('Trying to load file:', dataPath);
+  console.log(`Trying to load file (${mode} mode):`, dataPath);
   if (fs.existsSync(dataPath)) {
     const content = fs.readFileSync(dataPath, 'utf8');
     return JSON.parse(content);
@@ -150,7 +154,6 @@ ipcMain.handle('load-file', async () => {
     };
   }
 });
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
